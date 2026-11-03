@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:news_app/main.dart';
 import 'package:news_app/models/article.dart';
+import 'package:news_app/providers/news_provider.dart';
 import 'package:news_app/services/mock_news_service.dart';
 import 'package:news_app/services/news_service.dart';
 import 'package:news_app/theme/app_theme.dart';
@@ -11,16 +12,37 @@ import 'package:news_app/theme/app_theme.dart';
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
-  testWidgets('Aplikasi memuat tema AppTheme dengan benar', (
-    WidgetTester tester,
-  ) async {
-    await tester.pumpWidget(const NewsApp());
+  testWidgets(
+    'Aplikasi memuat Beranda dan menampilkan daftar berita lewat NewsProvider (Langkah 4)',
+    (WidgetTester tester) async {
+      // Menyuntikkan MockNewsService tanpa jeda untuk pengujian widget di lingkungan test
+      final NewsService mockService = MockNewsService(
+        simulatedState: MockResponseState.success,
+        simulatedDelay: Duration.zero,
+      );
 
-    // Memastikan judul halaman pratinjau tampil berbahasa Indonesia
-    expect(find.text('Kabar Hari Ini'), findsOneWidget);
-    expect(find.text('Tema Siap Dites'), findsOneWidget);
-    expect(AppTheme.lightTheme.useMaterial3, isTrue);
-  });
+      await tester.pumpWidget(NewsApp(newsService: mockService));
+
+      // Memastikan judul AppBar tampil berbahasa Indonesia dan indikator loading muncul dulu
+      expect(find.text('Kabar Hari Ini'), findsOneWidget);
+      expect(find.text('Sedang memuat berita terbaru...'), findsOneWidget);
+      expect(AppTheme.lightTheme.useMaterial3, isTrue);
+
+      // Menjalankan proses async pembacaan file assets di luar fake async
+      await tester.runAsync(() async {
+        await Future<void>.delayed(const Duration(milliseconds: 50));
+      });
+      await tester.pumpAndSettle();
+
+      expect(find.text('Kompas Tekno'), findsOneWidget);
+      expect(
+        find.text(
+          'Inovasi Kecerdasan Buatan Lokal Dorong Efisiensi Industri Kreatif di Indonesia',
+        ),
+        findsOneWidget,
+      );
+    },
+  );
 
   group('Pengujian Model Article dan Article.fromJson (Langkah 2)', () {
     test(
@@ -114,7 +136,7 @@ void main() {
         // Menggunakan tipe abstrak NewsService sesuai arsitektur PRD
         final NewsService service = MockNewsService(
           simulatedState: MockResponseState.success,
-          simulatedDelay: const Duration(milliseconds: 50),
+          simulatedDelay: Duration.zero,
         );
 
         final List<Article> articles = await service.fetchArticles();
@@ -130,7 +152,7 @@ void main() {
       () async {
         final NewsService service = MockNewsService(
           simulatedState: MockResponseState.empty,
-          simulatedDelay: const Duration(milliseconds: 50),
+          simulatedDelay: Duration.zero,
         );
 
         final List<Article> articles = await service.fetchArticles();
@@ -144,7 +166,7 @@ void main() {
       () async {
         final NewsService service = MockNewsService(
           simulatedState: MockResponseState.error,
-          simulatedDelay: const Duration(milliseconds: 50),
+          simulatedDelay: Duration.zero,
         );
 
         expect(
@@ -153,5 +175,47 @@ void main() {
         );
       },
     );
+  });
+
+  group('Pengujian NewsProvider dengan 4 Status Jaringan (Langkah 4)', () {
+    test('Status berubah dari loading ke success saat berita berhasil dimuat', () async {
+      final NewsProvider provider = NewsProvider(
+        newsService: MockNewsService(
+          simulatedState: MockResponseState.success,
+          simulatedDelay: Duration.zero,
+        ),
+      );
+
+      expect(provider.status, equals(NewsStatus.loading));
+      await provider.loadArticles();
+      expect(provider.status, equals(NewsStatus.success));
+      expect(provider.articles.length, equals(8));
+    });
+
+    test('Status berubah menjadi empty saat hasil daftar berita kosong', () async {
+      final NewsProvider provider = NewsProvider(
+        newsService: MockNewsService(
+          simulatedState: MockResponseState.empty,
+          simulatedDelay: Duration.zero,
+        ),
+      );
+
+      await provider.loadArticles();
+      expect(provider.status, equals(NewsStatus.empty));
+      expect(provider.articles, isEmpty);
+    });
+
+    test('Status berubah menjadi error saat pemanggilan gagal', () async {
+      final NewsProvider provider = NewsProvider(
+        newsService: MockNewsService(
+          simulatedState: MockResponseState.error,
+          simulatedDelay: Duration.zero,
+        ),
+      );
+
+      await provider.loadArticles();
+      expect(provider.status, equals(NewsStatus.error));
+      expect(provider.errorMessage, isNotEmpty);
+    });
   });
 }
