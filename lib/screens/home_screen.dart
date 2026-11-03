@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/article.dart';
+import '../providers/bookmark_provider.dart';
 import '../providers/news_provider.dart';
 import '../theme/app_theme.dart';
 import '../widgets/article_card.dart';
 import '../widgets/state_views.dart';
+import 'bookmark_screen.dart';
+import 'detail_screen.dart';
 
-/// Layar Beranda yang menampilkan daftar berita dari [NewsProvider].
-/// Mendukung keempat status jaringan: loading, sukses, error (dengan tombol coba lagi),
-/// dan kosong, serta fitur tarik ke bawah (pull-to-refresh) untuk memuat ulang.
+/// Layar Beranda yang menampilkan daftar berita dari [NewsProvider] dan menyediakan
+/// akses ke halaman Favorit ([BookmarkScreen]) serta tombol bookmark pada setiap kartu.
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -34,6 +36,18 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: AppBar(
         title: const Text('Kabar Hari Ini'),
         actions: [
+          // Tombol menuju halaman Favorit (BookmarkScreen)
+          IconButton(
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute<void>(
+                  builder: (_) => const BookmarkScreen(),
+                ),
+              );
+            },
+            icon: const Icon(Icons.bookmarks_outlined),
+            tooltip: 'Berita Favorit',
+          ),
           // Tombol muat ulang cepat di AppBar
           IconButton(
             onPressed: () => context.read<NewsProvider>().loadArticles(),
@@ -43,12 +57,13 @@ class _HomeScreenState extends State<HomeScreen> {
           const SizedBox(width: AppTheme.spacing8),
         ],
       ),
-      // Menggunakan Consumer<NewsProvider> untuk mendengarkan perubahan status jaringan
-      // dan membangun ulang tampilan sesuai status: loading, error, empty, atau success.
-      body: Consumer<NewsProvider>(
+      // Menggunakan Consumer2 untuk mendengarkan perubahan status jaringan (NewsProvider)
+      // sekaligus status bookmark (BookmarkProvider) agar ikon bookmark selalu sinkron.
+      body: Consumer2<NewsProvider, BookmarkProvider>(
         builder: (
           BuildContext context,
           NewsProvider newsProvider,
+          BookmarkProvider bookmarkProvider,
           Widget? child,
         ) {
           switch (newsProvider.status) {
@@ -64,7 +79,8 @@ class _HomeScreenState extends State<HomeScreen> {
             case NewsStatus.empty:
               return EmptyStateView(
                 title: 'Belum Ada Berita',
-                message: 'Saat ini belum ada artikel berita yang dapat ditampilkan.',
+                message:
+                    'Saat ini belum ada artikel berita yang dapat ditampilkan.',
                 onAction: () => newsProvider.loadArticles(),
               );
 
@@ -83,8 +99,44 @@ class _HomeScreenState extends State<HomeScreen> {
                       const SizedBox(height: AppTheme.spacing16),
                   itemBuilder: (BuildContext context, int index) {
                     final Article article = newsProvider.articles[index];
+                    final bool isSaved = bookmarkProvider.isBookmarked(article);
+
                     return ArticleCard(
                       article: article,
+                      onTap: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute<void>(
+                            builder: (_) => DetailScreen(article: article),
+                          ),
+                        );
+                      },
+                      trailingAction: IconButton(
+                        onPressed: () {
+                          bookmarkProvider.toggleBookmark(article);
+                          ScaffoldMessenger.of(context)
+                            ..hideCurrentSnackBar()
+                            ..showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                  isSaved
+                                      ? 'Dihapus dari daftar favorit.'
+                                      : 'Disimpan ke daftar favorit.',
+                                ),
+                              ),
+                            );
+                        },
+                        icon: Icon(
+                          isSaved
+                              ? Icons.bookmark_rounded
+                              : Icons.bookmark_border_rounded,
+                          color: isSaved
+                              ? AppTheme.accentColor
+                              : AppTheme.textSecondaryColor,
+                        ),
+                        tooltip: isSaved
+                            ? 'Hapus dari Favorit'
+                            : 'Simpan ke Favorit',
+                      ),
                     );
                   },
                 ),
@@ -95,4 +147,3 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 }
-

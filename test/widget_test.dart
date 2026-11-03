@@ -1,13 +1,18 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:news_app/main.dart';
 import 'package:news_app/models/article.dart';
+import 'package:news_app/providers/bookmark_provider.dart';
 import 'package:news_app/providers/news_provider.dart';
+import 'package:news_app/screens/bookmark_screen.dart';
+import 'package:news_app/screens/detail_screen.dart';
 import 'package:news_app/services/mock_news_service.dart';
 import 'package:news_app/services/news_service.dart';
 import 'package:news_app/theme/app_theme.dart';
+import 'package:provider/provider.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -216,6 +221,79 @@ void main() {
       await provider.loadArticles();
       expect(provider.status, equals(NewsStatus.error));
       expect(provider.errorMessage, isNotEmpty);
+    });
+  });
+
+  group('Pengujian Layar Detail (Langkah 5)', () {
+    testWidgets(
+      'DetailScreen menampilkan informasi artikel lengkap dan menangani field null dengan rapi',
+      (WidgetTester tester) async {
+        const Article sampleArticle = Article(
+          title: 'Judul Artikel Uji Coba Detail',
+          sourceName: null,
+          author: null,
+          description: null,
+          content: null,
+          urlToImage: null,
+          publishedAt: null,
+        );
+
+        await tester.pumpWidget(
+          ChangeNotifierProvider<BookmarkProvider>(
+            create: (_) => BookmarkProvider(),
+            child: MaterialApp(
+              theme: AppTheme.lightTheme,
+              home: const DetailScreen(article: sampleArticle),
+            ),
+          ),
+        );
+
+        expect(find.text('Detail Berita'), findsOneWidget);
+        expect(find.text('Judul Artikel Uji Coba Detail'), findsOneWidget);
+        expect(find.text('Sumber Tidak Diketahui'), findsOneWidget);
+        expect(find.text('Penulis: Redaksi'), findsOneWidget);
+        expect(find.text('Baca selengkapnya'), findsOneWidget);
+      },
+    );
+  });
+
+  group('Pengujian BookmarkProvider dan Layar Favorit (Langkah 6)', () {
+    test('BookmarkProvider dapat menambah dan menghapus artikel favorit di memori', () {
+      final BookmarkProvider bookmarkProvider = BookmarkProvider();
+      const Article sampleArticle = Article(
+        title: 'Artikel Uji Bookmark',
+        url: 'https://contoh.id/artikel-uji',
+      );
+
+      expect(bookmarkProvider.isBookmarked(sampleArticle), isFalse);
+      expect(bookmarkProvider.bookmarks, isEmpty);
+
+      // Menambahkan ke favorit
+      bookmarkProvider.toggleBookmark(sampleArticle);
+      expect(bookmarkProvider.isBookmarked(sampleArticle), isTrue);
+      expect(bookmarkProvider.bookmarks.length, equals(1));
+
+      // Menghapus dari favorit
+      bookmarkProvider.toggleBookmark(sampleArticle);
+      expect(bookmarkProvider.isBookmarked(sampleArticle), isFalse);
+      expect(bookmarkProvider.bookmarks, isEmpty);
+    });
+
+    testWidgets('BookmarkScreen menampilkan pesan kosong saat belum ada favorit', (
+      WidgetTester tester,
+    ) async {
+      await tester.pumpWidget(
+        ChangeNotifierProvider<BookmarkProvider>(
+          create: (_) => BookmarkProvider(),
+          child: MaterialApp(
+            theme: AppTheme.lightTheme,
+            home: const BookmarkScreen(),
+          ),
+        ),
+      );
+
+      expect(find.text('Berita Favorit'), findsOneWidget);
+      expect(find.text('Belum Ada Berita Favorit'), findsOneWidget);
     });
   });
 }
