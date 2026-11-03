@@ -4,9 +4,13 @@ import 'dart:io';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:news_app/main.dart';
 import 'package:news_app/models/article.dart';
+import 'package:news_app/services/mock_news_service.dart';
+import 'package:news_app/services/news_service.dart';
 import 'package:news_app/theme/app_theme.dart';
 
 void main() {
+  TestWidgetsFlutterBinding.ensureInitialized();
+
   testWidgets('Aplikasi memuat tema AppTheme dengan benar', (
     WidgetTester tester,
   ) async {
@@ -99,6 +103,54 @@ void main() {
         expect(article.urlToImage, isNull);
         expect(article.publishedAt, isNull);
         expect(article.content, isNull);
+      },
+    );
+  });
+
+  group('Pengujian NewsService dan MockNewsService (Langkah 3)', () {
+    test(
+      'MockNewsService mengembalikan daftar artikel saat simulatedState = success',
+      () async {
+        // Menggunakan tipe abstrak NewsService sesuai arsitektur PRD
+        final NewsService service = MockNewsService(
+          simulatedState: MockResponseState.success,
+          simulatedDelay: const Duration(milliseconds: 50),
+        );
+
+        final List<Article> articles = await service.fetchArticles();
+
+        expect(articles, isNotEmpty);
+        expect(articles.length, equals(8));
+        expect(articles.first.sourceName, equals('Kompas Tekno'));
+      },
+    );
+
+    test(
+      'MockNewsService mengembalikan daftar kosong saat simulatedState = empty',
+      () async {
+        final NewsService service = MockNewsService(
+          simulatedState: MockResponseState.empty,
+          simulatedDelay: const Duration(milliseconds: 50),
+        );
+
+        final List<Article> articles = await service.fetchArticles();
+
+        expect(articles, isEmpty);
+      },
+    );
+
+    test(
+      'MockNewsService melempar Exception saat simulatedState = error',
+      () async {
+        final NewsService service = MockNewsService(
+          simulatedState: MockResponseState.error,
+          simulatedDelay: const Duration(milliseconds: 50),
+        );
+
+        expect(
+          () async => await service.fetchArticles(),
+          throwsA(isA<Exception>()),
+        );
       },
     );
   });
