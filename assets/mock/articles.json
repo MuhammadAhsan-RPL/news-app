@@ -1,0 +1,119 @@
+{
+  "status": "ok",
+  "totalResults": 8,
+  "articles": [
+    {
+      "source": {
+        "id": "kompas-tekno",
+        "name": "Kompas Tekno"
+      },
+      "author": "Rizky Pratama",
+      "title": "Inovasi Kecerdasan Buatan Lokal Dorong Efisiensi Industri Kreatif di Indonesia",
+      "description": "Sejumlah startup teknologi tanah air mulai mengadopsi model bahasa terfokus untuk mempercepat alur kerja desain, penulisan, dan analisis pasar secara aman.",
+      "url": "https://tekno.kompas.com/read/2026/10/13/inovasi-ai-lokal",
+      "urlToImage": "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1000&q=80",
+      "publishedAt": "2026-10-13T08:30:00Z",
+      "content": "Perkembangan ekosistem digital di Indonesia memasuki babak baru. Berbagai perusahaan rintisan kini fokus membangun solusi kecerdasan buatan yang disesuaikan dengan konteks bahasa dan kebutuhan industri dalam negeri, mulai dari layanan pelanggan hingga otomasi kreatif.",
+      "category": "Teknologi"
+    },
+    {
+      "source": {
+        "id": "bisnis-indonesia",
+        "name": "Bisnis Indonesia"
+      },
+      "author": "Nadia Kusuma",
+      "title": "IHSG Menguat di Awal Pekan Didorong Sentimen Positif Sektor Perbankan dan Energi",
+      "description": "Indeks Harga Saham Gabungan mencatatkan penguatan signifikan seiring meningkatnya kepercayaan investor terhadap stabilitas makroekonomi nasional.",
+      "url": "https://market.bisnis.com/read/20261013/ihsg-menguat-awal-pekan",
+      "urlToImage": "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1000&q=80",
+      "publishedAt": "2026-10-13T07:15:00Z",
+      "content": "Perdagangan bursa saham domestik dibuka di zona hijau pada pagi ini. Analis menilai arus modal masuk ke saham berkapitalisasi besar menjadi penopang utama penguatan indeks sepanjang sesi pertama perdagangan.",
+      "category": "Bisnis"
+    },
+    {
+      "source": {
+        "id": "detik-sport",
+        "name": "Detik Sport"
+      },
+      "author": "Budi Santoso",
+      "title": "Timnas Bulu Tangkis Indonesia Siap Tampil Maksimal di Kejuaraan Asia Terbuka",
+      "description": "Para atlet ganda putra dan tunggal putri telah menjalani pemusatan latihan intensif guna mempertahankan gelar juara di turnamen bergengsi tahun ini.",
+      "url": "https://sport.detik.com/raket/d-20261013/timnas-bulu-tangkis-siap-tampil",
+      "urlToImage": "https://images.unsplash.com/photo-1526676037777-05a232554f77?auto=format&fit=crop&w=1000&q=80",
+      "publishedAt": "2026-10-12T19:45:00Z",
+      "content": "Persiapan matang dilakukan oleh jajaran pelatih dan atlet nasional menjelang keberangkatan ke turnamen Asia Terbuka. Fokus latihan pekan terakhir diarahkan pada ketahanan fisik serta strategi menghadapi lawan unggulan.",
+      "category": "Olahraga"
+    },
+    {
+      "source": {
+        "id": null,
+        "name": "Sains Populer"
+      },
+      "author": null,
+      "title": "Observatorium Nasional Berhasil Rekam Fenomena Hujan Meteor Orionid dengan Jelas",
+      "description": null,
+      "url": "https://sainspopuler.id/artikel/fenomena-hujan-meteor-orionid",
+      "urlToImage": null,
+      "publishedAt": "2026-10-12T14:20:00Z",
+      "content": "Langit cerah tanpa polusi cahaya di kawasan observatorium memungkinkan tim peneliti mengabadikan puluhan jejak meteor per jam menggunakan kamera sensitivitas tinggi.",
+      "category": "Sains"
+    },
+    {
+      "source": {
+        "id": "sehat-nesia",
+        "name": "SehatNesia"
+      },
+      "author": "dr. Clara Wijaya",
+      "title": "Pentingnya Pola Tidur Teratur dan Hidrasi Cukup bagi Produktivitas Pelajar",
+      "description": "Penelitian terbaru menunjukkan bahwa kualitas istirahat malam berperan besar dalam daya ingat, konsentrasi belajar, dan kebugaran tubuh sehari-hari.",
+      "url": "https://sehatnesia.id/gaya-hidup/pola-tidur-dan-hidrasi-pelajar",
+      "urlToImage": "https://images.unsplash.com/photo-1506126613408-eca07ce68773?auto=format&fit=crop&w=1000&q=80",
+      "publishedAt": "2026-10-11T11:00:00Z",
+      "content": "Banyak pelajar mengabaikan jam tidur demi menyelesaikan tugas. Padahal, tidur selama 7 hingga 8 jam setiap malam membantu otak mengonsolidasikan informasi baru yang dipelajari di sekolah.",
+      "category": "Kesehatan"
+    },
+    {
+      "source": {
+        "id": "katadata",
+        "name": "Katadata"
+      },
+      "author": "Andi Firmansyah",
+      "title": "UMKM Kuliner Nusantara Catat Kenaikan Transaksi Digital Hingga 45 Persen",
+      "description": "Pemanfaatan pembayaran nirsentuh dan pemasaran digital membantu pelaku usaha mikro menjangkau pelanggan baru di berbagai kota.",
+      "url": "https://katadata.co.id/ekonomi-digital/umkm-kuliner-transaksi-digital",
+      "urlToImage": "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?auto=format&fit=crop&w=1000&q=80",
+      "publishedAt": "2026-10-10T16:10:00Z",
+      "content": null,
+      "category": "Bisnis"
+    },
+    {
+      "source": {
+        "id": "tech-daily-id",
+        "name": "Tech Daily ID"
+      },
+      "author": "Dimas Saputra",
+      "title": "Panduan Memulai Belajar Flutter dan Arsitektur Bersih untuk Pengembang Pemula",
+      "description": "Memisahkan kode tampilan, penyedia layanan data, dan manajemen state membuat aplikasi lebih mudah dirawat serta diuji.",
+      "url": "https://techdaily.id/flutter/panduan-arsitektur-bersih-pemula",
+      "urlToImage": "https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=1000&q=80",
+      "publishedAt": "2026-10-09T09:00:00Z",
+      "content": "Dalam pengembangan aplikasi mobile modern, pemisahan tanggung jawab antara UI dan logika pengambilan data sangat krusial. Dengan kelas abstrak sebagai titik sambung, pengembang dapat menguji tampilan menggunakan data contoh sebelum terhubung ke server.",
+      "category": "Teknologi"
+    },
+    {
+      "source": {
+        "id": null,
+        "name": null
+      },
+      "author": "",
+      "title": "Liga Pelajar Nasional Kembali Digelar di Lima Kota Besar Mulai Bulan Depan",
+      "description": "Kompetisi tahunan ini menjadi ajang pencarian bakat muda berbakat dari tingkat sekolah menengah di seluruh Indonesia.",
+      "url": "https://olahraga.id/liga-pelajar-nasional-2026",
+      "urlToImage": "",
+      "publishedAt": null,
+      "content": "Ribuan pelajar dijadwalkan berpartisipasi dalam cabang olahraga futsal, basket, dan atletik dengan standar pertandingan nasional.",
+      "category": "Olahraga"
+    }
+  ]
+}
+
