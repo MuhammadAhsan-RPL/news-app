@@ -296,4 +296,81 @@ void main() {
       expect(find.text('Belum Ada Berita Favorit'), findsOneWidget);
     });
   });
+
+  group(
+    'Pengujian Pencarian, Kategori, dan Ketiga State Tampilan (Langkah 7)',
+    () {
+      test(
+        'Pencarian dan filter kategori menyaring daftar artikel serta mengubah state menjadi empty bila tidak ada yang cocok',
+        () async {
+          final NewsProvider provider = NewsProvider(
+            newsService: MockNewsService(
+              simulatedState: MockResponseState.success,
+              simulatedDelay: Duration.zero,
+            ),
+          );
+
+          await provider.loadArticles();
+          expect(provider.status, equals(NewsStatus.success));
+          expect(provider.articles.length, equals(8));
+
+          // Filter kategori Teknologi (ada 2 artikel di mock JSON)
+          provider.setSelectedCategory('Teknologi');
+          expect(provider.status, equals(NewsStatus.success));
+          expect(provider.articles.length, equals(2));
+
+          // Pencarian kata kunci "Flutter" di dalam kategori Teknologi
+          provider.setSearchQuery('Flutter');
+          expect(provider.status, equals(NewsStatus.success));
+          expect(provider.articles.length, equals(1));
+          expect(
+            provider.articles.first.title,
+            contains('Belajar Flutter'),
+          );
+
+          // Pencarian kata kunci yang tidak ada -> status berubah menjadi empty
+          provider.setSearchQuery('KataKunciYangTidakAdaSamaSekali123');
+          expect(provider.status, equals(NewsStatus.empty));
+          expect(provider.articles, isEmpty);
+
+          // Reset filter mengembalikan semua artikel dan status menjadi success
+          provider.resetFilters();
+          expect(provider.status, equals(NewsStatus.success));
+          expect(provider.articles.length, equals(8));
+        },
+      );
+
+      testWidgets(
+        'Uji UI State Error: Menampilkan pesan kendala dan tombol Coba Lagi',
+        (WidgetTester tester) async {
+          final NewsService errorService = MockNewsService(
+            simulatedState: MockResponseState.error,
+            simulatedDelay: Duration.zero,
+          );
+
+          await tester.pumpWidget(NewsApp(newsService: errorService));
+          await tester.pumpAndSettle();
+
+          expect(find.text('Terjadi Kendala'), findsOneWidget);
+          expect(find.text('Coba Lagi'), findsOneWidget);
+        },
+      );
+
+      testWidgets(
+        'Uji UI State Kosong: Menampilkan pesan Belum Ada Berita saat data kosong',
+        (WidgetTester tester) async {
+          final NewsService emptyService = MockNewsService(
+            simulatedState: MockResponseState.empty,
+            simulatedDelay: Duration.zero,
+          );
+
+          await tester.pumpWidget(NewsApp(newsService: emptyService));
+          await tester.pumpAndSettle();
+
+          expect(find.text('Belum Ada Berita'), findsOneWidget);
+          expect(find.text('Muat Ulang'), findsOneWidget);
+        },
+      );
+    },
+  );
 }
